@@ -32,27 +32,25 @@ function Navbar() {
   };
 
   const navLinkClass = ({ isActive }) =>
-    `transition ${
+    `rounded-full px-4 py-2 text-sm font-medium transition ${
       isActive
-        ? "font-semibold text-gray-900 dark:text-white"
-        : "text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+        ? "bg-white/80 text-slate-900 shadow-sm ring-1 ring-slate-200 dark:bg-slate-800 dark:text-white dark:ring-slate-700"
+        : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
     }`;
 
   return (
-    <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur dark:border-gray-800 dark:bg-gray-950/95">
+    <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/80 backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/80">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
 
-        {/* LOGO */}
         <Link
           to="/"
           onClick={closeMobileMenu}
-          className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
+          className="text-2xl font-black tracking-tight text-slate-900 dark:text-white"
         >
-          Stay<span className="text-gray-500">Sphere</span>
+          Stay<span className="bg-gradient-to-r from-sky-500 to-cyan-500 bg-clip-text text-transparent">Sphere</span>
         </Link>
 
-        {/* DESKTOP NAVIGATION */}
-        <nav className="hidden items-center gap-8 md:flex">
+        <nav className="hidden items-center gap-2 md:flex">
           <NavLink to="/" className={navLinkClass}>
             Home
           </NavLink>
@@ -64,10 +62,10 @@ function Navbar() {
           <NavLink
             to="/favorites"
             className={({ isActive }) =>
-              `flex items-center gap-2 transition ${
+              `flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition ${
                 isActive
-                  ? "font-semibold text-gray-900 dark:text-white"
-                  : "text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+                  ? "bg-white/80 text-slate-900 shadow-sm ring-1 ring-slate-200 dark:bg-slate-800 dark:text-white dark:ring-slate-700"
+                  : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
               }`
             }
           >
@@ -76,13 +74,10 @@ function Navbar() {
           </NavLink>
         </nav>
 
-        {/* RIGHT SIDE */}
         <div className="hidden items-center gap-4 md:flex">
-
-          {/* THEME BUTTON */}
           <button
             onClick={toggleTheme}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-700 transition hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white/80 text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
             aria-label="Toggle theme"
           >
             {theme === "light" ? (
@@ -92,37 +87,35 @@ function Navbar() {
             )}
           </button>
 
-          {/* USER */}
           {user ? (
             <div className="relative">
               <button
                 onClick={() => setUserMenu(!userMenu)}
-                className="flex items-center gap-2 rounded-full border border-gray-200 px-3 py-2 transition hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800"
+                className="flex items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-3 py-2 shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800"
               >
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-900 text-sm font-semibold text-white dark:bg-white dark:text-gray-900">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-slate-900 to-sky-600 text-sm font-bold text-white dark:from-white dark:to-sky-300 dark:text-slate-900">
                   {user.name
                     ? user.name.charAt(0).toUpperCase()
                     : "U"}
                 </div>
 
-                <span className="max-w-24 truncate text-sm font-medium">
+                <span className="max-w-24 truncate text-sm font-medium text-slate-700 dark:text-slate-200">
                   {user.name || "User"}
                 </span>
 
-                <ChevronDown size={16} />
+                <ChevronDown size={16} className="text-slate-500 dark:text-slate-300" />
               </button>
 
-              {/* USER DROPDOWN */}
               {userMenu && (
-                <div className="absolute right-0 top-14 w-52 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl dark:border-gray-800 dark:bg-gray-900">
+                <div className="absolute right-0 top-14 w-56 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_18px_45px_rgba(15,23,42,0.15)] dark:border-slate-800 dark:bg-slate-900">
 
-                  <div className="border-b border-gray-200 px-4 py-3 dark:border-gray-800">
-                    <p className="truncate text-sm font-semibold">
+                  <div className="border-b border-slate-200 px-4 py-3 dark:border-slate-800">
+                    <p className="truncate text-sm font-semibold text-slate-900 dark:text-white">
                       {user.name || "User"}
                     </p>
 
                     {user.email && (
-                      <p className="mt-1 truncate text-xs text-gray-500 dark:text-gray-400">
+                      <p className="mt-1 truncate text-xs text-slate-500 dark:text-slate-400">
                         {user.email}
                       </p>
                     )}
@@ -131,7 +124,7 @@ function Navbar() {
                   <Link
                     to="/profile"
                     onClick={() => setUserMenu(false)}
-                    className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+                    className="flex items-center gap-3 px-4 py-3 text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
                   >
                     <User size={17} />
                     My Profile
@@ -140,7 +133,7 @@ function Navbar() {
                   <Link
                     to="/my-bookings"
                     onClick={() => setUserMenu(false)}
-                    className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+                    className="flex items-center gap-3 px-4 py-3 text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
                   >
                     <span className="text-base">📋</span>
                     My Bookings
@@ -148,7 +141,7 @@ function Navbar() {
 
                   <button
                     onClick={handleLogout}
-                    className="flex w-full items-center gap-3 border-t border-gray-200 px-4 py-3 text-sm text-red-500 transition hover:bg-red-50 dark:border-gray-800 dark:hover:bg-red-950/30"
+                    className="flex w-full items-center gap-3 border-t border-slate-200 px-4 py-3 text-sm text-red-500 transition hover:bg-red-50 dark:border-slate-800 dark:hover:bg-red-950/30"
                   >
                     <LogOut size={17} />
                     Sign Out
@@ -160,14 +153,14 @@ function Navbar() {
             <>
               <Link
                 to="/signin"
-                className="text-sm font-medium text-gray-700 transition hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+                className="text-sm font-medium text-slate-700 transition hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
               >
                 Sign In
               </Link>
 
               <Link
                 to="/signup"
-                className="rounded-full bg-gray-900 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200"
+                className="rounded-full bg-gradient-to-r from-slate-900 to-sky-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-sky-500/20 transition hover:-translate-y-0.5 dark:from-white dark:to-sky-200 dark:text-slate-900"
               >
                 Sign Up
               </Link>
@@ -175,12 +168,10 @@ function Navbar() {
           )}
         </div>
 
-        {/* MOBILE BUTTONS */}
         <div className="flex items-center gap-2 md:hidden">
-
           <button
             onClick={toggleTheme}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-700 dark:border-gray-700 dark:text-gray-300"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
             aria-label="Toggle theme"
           >
             {theme === "light" ? (
@@ -192,7 +183,7 @@ function Navbar() {
 
           <button
             onClick={() => setMobileMenu(!mobileMenu)}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-700 dark:border-gray-700 dark:text-gray-300"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
             aria-label="Toggle menu"
           >
             {mobileMenu ? <X size={21} /> : <Menu size={21} />}

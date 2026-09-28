@@ -17,6 +17,7 @@ const Favorites = lazy(() => import("../pages/Favorites"));
 const Theme = lazy(() => import("../pages/Theme"));
 const NotFound = lazy(() => import("../pages/NotFound"));
 
+
 function LoadingScreen() {
   return (
     <div className="flex min-h-[70vh] items-center justify-center bg-gray-50 dark:bg-gray-950">
@@ -118,6 +119,7 @@ function AppRoutes() {
           path="*"
           element={<NotFound />}
         />
+     
 
       </Routes>
     </Suspense>

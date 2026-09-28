@@ -1,4 +1,189 @@
 @import "tailwindcss";
 
-
 @custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --bg-soft: #f5f7fb;
+  --bg-strong: #edf6ff;
+  --card-soft: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(148, 163, 184, 0.2);
+  --text-soft: #526072;
+  --shadow-soft: 0 22px 50px rgba(15, 23, 42, 0.12);
+  --travel-primary: #0f172a;
+  --travel-accent: #3b82f6;
+  --travel-accent-2: #14b8a6;
+  --travel-gold: #fbbf24;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.12), transparent 25%),
+    radial-gradient(circle at bottom right, rgba(20, 184, 166, 0.1), transparent 20%),
+    linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
+  color: #0f172a;
+}
+
+.dark body {
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.12), transparent 25%),
+    radial-gradient(circle at bottom right, rgba(20, 184, 166, 0.08), transparent 22%),
+    #020817;
+  color: #e2e8f0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+img {
+  user-select: none;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(28px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulseGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 rgba(59, 130, 246, 0);
+  }
+  50% {
+    box-shadow: 0 0 28px rgba(96, 165, 250, 0.35);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-delay {
+  animation: float 7s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.7s ease-out both;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.8s ease-out both;
+}
+
+.glass-panel {
+  background: rgba(15, 23, 42, 0.24);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+}
+
+.hero-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(18px);
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.shimmer-card {
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.18) 0%,
+    rgba(255, 255, 255, 0.5) 25%,
+    rgba(255, 255, 255, 0.12) 50%,
+    rgba(255, 255, 255, 0.18) 100%
+  );
+  background-size: 220% 100%;
+  animation: shimmer 3.4s linear infinite;
+}
+
+.destination-card,
+.hotel-card {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.destination-card::before,
+.hotel-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0) 15%, rgba(15, 23, 42, 0.64) 100%);
+  z-index: 1;
+}
+
+.destination-card > *,
+.hotel-card > * {
+  position: relative;
+  z-index: 2;
+}
+
+.feature-card {
+  transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 22px 38px rgba(15, 23, 42, 0.12);
+}
+
+.hero-cta {
+  animation: pulseGlow 2.75s ease-in-out infinite;
+}
+
+.soft-grid {
+  background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
