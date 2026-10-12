@@ -30,7 +30,7 @@ function SignUp() {
 
   const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
@@ -54,7 +54,7 @@ function SignUp() {
       return;
     }
 
-    const result = signup({
+    const result = await signup({
       name: name.trim(),
       email: email.trim(),
       password,

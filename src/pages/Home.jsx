@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import {
-  Search,
-  MapPin,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
 
 import HotelCard from "../components/HotelCard";
+import SearchBar from "../components/SearchBar";
 import { getHotels } from "../services/api";
 
 function Home() {
@@ -20,6 +19,14 @@ function Home() {
   const [search, setSearch] = useState("");
   const [city, setCity] = useState("");
   const [priceFilter, setPriceFilter] = useState("");
+  const [checkIn, setCheckIn] = useState(() => {
+    const date = new Date();
+    return date.toISOString().split("T")[0];
+  });
+  const [checkOut, setCheckOut] = useState(() => {
+    const date = new Date(Date.now() + 86400000);
+    return date.toISOString().split("T")[0];
+  });
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -413,88 +420,15 @@ function Home() {
 
       <section className="mx-auto max-w-7xl px-6 py-10">
 
-        <div className="rounded-[30px] border border-slate-200/80 bg-white/80 p-5 shadow-[0_18px_35px_rgba(15,23,42,0.06)] backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/80">
-
-          <div className="grid gap-4 md:grid-cols-3">
-
-            <div className="relative">
-
-              <Search
-                size={19}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-              />
-
-              <input
-                type="text"
-                value={search}
-                onChange={(e) =>
-                  setSearch(e.target.value)
-                }
-                placeholder="Search hotel or city..."
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50 py-3.5 pl-11 pr-4 text-slate-900 outline-none transition duration-300 focus:border-sky-500 focus:shadow-[0_10px_25px_rgba(59,130,246,0.12)] dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:border-sky-400"
-              />
-
-            </div>
-
-            <div className="relative">
-
-              <MapPin
-                size={19}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-              />
-
-              <select
-                value={city}
-                onChange={(e) =>
-                  setCity(e.target.value)
-                }
-                className="w-full appearance-none rounded-2xl border border-slate-200 bg-slate-50 py-3.5 pl-11 pr-4 text-slate-900 outline-none transition dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-              >
-                <option value="">
-                  All Cities
-                </option>
-
-                {cities.map((item, index) => (
-                  <option
-                    key={`${item}-${index}`}
-                    value={item}
-                  >
-                    {item}
-                  </option>
-                ))}
-
-              </select>
-
-            </div>
-
-            <select
-              value={priceFilter}
-              onChange={(e) =>
-                setPriceFilter(e.target.value)
-              }
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-slate-900 outline-none transition dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-            >
-              <option value="">
-                All Prices
-              </option>
-
-              <option value="under3000">
-                Under ₹3,000
-              </option>
-
-              <option value="3000to5000">
-                ₹3,000 - ₹5,000
-              </option>
-
-              <option value="above5000">
-                Above ₹5,000
-              </option>
-
-            </select>
-
-          </div>
-
-        </div>
+        <SearchBar
+          search={search}
+          onSearchChange={setSearch}
+          checkIn={checkIn}
+          checkOut={checkOut}
+          onCheckInChange={setCheckIn}
+          onCheckOutChange={setCheckOut}
+          onSubmit={() => setCurrentPage(1)}
+        />
 
       </section>
 

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="StaySphere logo">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1f2937"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.45)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="8" y="8" width="112" height="112" rx="28" fill="url(#bg)"/>
+
+  <path d="M64 20L72 50L102 58L72 66L64 96L56 66L26 58L56 50L64 20Z" fill="#ffffff"/>
+  <path d="M64 36L66.8 52.2L83 55L66.8 57.8L64 74L61.2 57.8L45 55L61.2 52.2L64 36Z" fill="#111827" opacity="0.22"/>
+
+  <path d="M64 18L69 41L92 46L69 51L64 74L59 51L36 46L59 41L64 18Z" fill="#ffffff" opacity="0.96"/>
+
+  <path d="M20 26C33 18, 42 24, 46 36" stroke="rgba(255,255,255,0.32)" stroke-width="8" stroke-linecap="round" fill="none"/>
+  <path d="M84 86C93 94, 102 99, 109 95" stroke="rgba(255,255,255,0.18)" stroke-width="7" stroke-linecap="round" fill="none"/>
+</svg>

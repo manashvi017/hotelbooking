@@ -23,6 +23,28 @@ function HotelDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [currentImage, setCurrentImage] = useState(0);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewText, setReviewText] = useState("");
+  const [reviews, setReviews] = useState([
+    {
+      name: "Aarav",
+      stay: "Stayed 2 nights",
+      rating: 5,
+      comment: "Very clean room, friendly staff, and the location was perfect for sightseeing.",
+    },
+    {
+      name: "Meher",
+      stay: "Stayed 1 night",
+      rating: 4,
+      comment: "Comfortable bed and smooth check-in process. The breakfast spread was excellent.",
+    },
+    {
+      name: "Rajat",
+      stay: "Stayed 3 nights",
+      rating: 5,
+      comment: "Great ambience and the staff helped with every request. Definitely would return.",
+    },
+  ]);
 
   useEffect(() => {
     const fetchHotel = async () => {
@@ -64,6 +86,55 @@ function HotelDetails() {
 
     fetchHotel();
   }, [id]);
+
+  const normalizeImageEntry = (entry) => {
+    if (!entry) return "";
+
+    if (typeof entry === "string") {
+      return entry.trim();
+    }
+
+    if (typeof entry === "object") {
+      return [
+        entry.url,
+        entry.src,
+        entry.image,
+        entry.photo,
+        entry.thumbnail,
+      ]
+        .filter(Boolean)
+        .map((item) => String(item).trim())
+        .find(Boolean) || "";
+    }
+
+    return "";
+  };
+
+  const galleryCandidates = [
+    ...(Array.isArray(hotel?.photos) ? hotel.photos : []),
+    ...(Array.isArray(hotel?.images) ? hotel.images : []),
+    hotel?.image,
+    hotel?.image_url,
+    hotel?.imageUrl,
+    hotel?.photo,
+    hotel?.photo_url,
+    hotel?.thumbnail,
+  ]
+    .map(normalizeImageEntry)
+    .filter((url) => typeof url === "string" && url.length > 0)
+    .filter((url) => /^https?:\/\//i.test(url));
+
+  const images = [...new Set(galleryCandidates)].slice(0, 5);
+
+  if (images.length === 0) {
+    images.push("");
+  }
+
+  useEffect(() => {
+    setCurrentImage((previous) =>
+      previous >= images.length ? 0 : previous
+    );
+  }, [images.length]);
 
   // Loading
   if (loading) {
@@ -145,41 +216,26 @@ function HotelDetails() {
     hotel.details ||
     "Enjoy a comfortable and memorable stay at this beautiful property.";
 
-  // Get available images
-  const mainImage =
-    hotel.image ||
-    hotel.image_url ||
-    hotel.imageUrl ||
-    hotel.photo ||
-    hotel.photo_url ||
-    hotel.thumbnail ||
-    "";
-
-  let images = [];
-
-  if (Array.isArray(hotel.images)) {
-    images = hotel.images.filter(Boolean);
-  }
-
-  if (images.length === 0 && mainImage) {
-    images = [mainImage];
-  }
-
-  if (images.length === 0) {
-    images = [""];
-  }
-
-  // If API has only one image, repeat it for the gallery
-  if (images.length === 1 && images[0]) {
-    images = [
-      images[0],
-      images[0],
-      images[0],
-      images[0],
-    ];
-  }
-
   const liked = isInWishlist(hotel.id);
+
+  const handleSubmitReview = () => {
+    const trimmedReview = reviewText.trim();
+
+    if (!trimmedReview) {
+      return;
+    }
+
+    const newReview = {
+      name: user?.name || user?.firstName || "Guest",
+      stay: "Just now",
+      rating: reviewRating,
+      comment: trimmedReview,
+    };
+
+    setReviews((previousReviews) => [newReview, ...previousReviews]);
+    setReviewText("");
+    setReviewRating(5);
+  };
 
   const nextImage = () => {
     setCurrentImage((previous) =>
@@ -221,16 +277,16 @@ function HotelDetails() {
         </button>
 
         {/* IMAGE GALLERY */}
-        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="grid gap-4 lg:grid-cols-[1.45fr_1fr] lg:auto-rows-[220px]">
 
           {/* MAIN IMAGE */}
-          <div className="relative h-[420px] overflow-hidden rounded-3xl bg-gray-200 dark:bg-gray-800 sm:h-[500px]">
+          <div className="relative h-[420px] overflow-hidden rounded-3xl bg-gray-200 dark:bg-gray-800 sm:h-[500px] lg:row-span-2 lg:h-full">
 
             {images[currentImage] ? (
               <img
                 src={images[currentImage]}
                 alt={hotelName}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-cover object-center"
                 onError={(e) => {
                   e.currentTarget.style.display = "none";
                 }}
@@ -279,13 +335,13 @@ function HotelDetails() {
           </div>
 
           {/* THUMBNAILS */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 lg:row-span-2">
 
             {images.slice(0, 4).map((image, index) => (
               <button
-                key={`${image}-${index}`}
+                key={`${image || "empty-image"}-${index}`}
                 onClick={() => setCurrentImage(index)}
-                className={`relative overflow-hidden rounded-3xl bg-gray-200 dark:bg-gray-800 ${
+                className={`relative h-[190px] overflow-hidden rounded-3xl bg-gray-200 dark:bg-gray-800 sm:h-[220px] lg:h-full ${
                   currentImage === index
                     ? "ring-2 ring-gray-900 dark:ring-white"
                     : ""
@@ -295,7 +351,7 @@ function HotelDetails() {
                   <img
                     src={image}
                     alt={`${hotelName} ${index + 1}`}
-                    className="h-full w-full object-cover transition duration-300 hover:scale-105"
+                    className="h-full w-full object-cover object-center transition duration-300 hover:scale-105"
                     onError={(e) => {
                       e.currentTarget.style.display = "none";
                     }}
@@ -360,6 +416,103 @@ function HotelDetails() {
                 {description}
               </p>
 
+            </div>
+
+            {/* GUEST FEEDBACK */}
+            <div className="mt-10 rounded-3xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-sm font-medium uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400">
+                    Guest feedback
+                  </p>
+                  <h3 className="mt-2 text-2xl font-bold">
+                    What guests say after their stay
+                  </h3>
+                </div>
+
+                <div className="flex items-center gap-2 rounded-full bg-amber-50 px-3 py-2 text-amber-700 dark:bg-amber-500/10 dark:text-amber-300">
+                  <Star size={16} fill="currentColor" />
+                  <span className="text-sm font-semibold">{rating} / 5 guest rating</span>
+                </div>
+              </div>
+
+              <div className="mt-6 grid gap-4 md:grid-cols-3">
+                {reviews.map((review, index) => (
+                  <div
+                    key={`${review.name}-${review.stay}-${index}`}
+                    className="rounded-2xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/70"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-semibold">{review.name}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{review.stay}</p>
+                      </div>
+
+                      <div className="flex items-center gap-1 text-amber-500">
+                        {Array.from({ length: 5 }).map((_, index) => (
+                          <Star
+                            key={`${review.name}-${index}`}
+                            size={14}
+                            fill={index < review.rating ? "currentColor" : "none"}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    <p className="mt-3 text-sm leading-6 text-gray-600 dark:text-gray-300">
+                      “{review.comment}”
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-8 rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-5 dark:border-gray-700 dark:bg-gray-800/50">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-lg font-semibold">Rate your stay</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Tell other travellers what you experienced.</p>
+                  </div>
+
+                  <div className="flex items-center gap-1 rounded-full bg-white px-2 py-1 shadow-sm dark:bg-gray-900">
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <button
+                        key={`rating-${index}`}
+                        type="button"
+                        onClick={() => setReviewRating(index + 1)}
+                        className="p-1"
+                      >
+                        <Star
+                          size={18}
+                          fill={index < reviewRating ? "currentColor" : "none"}
+                          className={index < reviewRating ? "text-amber-500" : "text-gray-300 dark:text-gray-600"}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <textarea
+                  value={reviewText}
+                  onChange={(event) => setReviewText(event.target.value)}
+                  rows={4}
+                  placeholder="Write about cleanliness, comfort, service, and your overall experience..."
+                  className="mt-4 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-700 outline-none ring-0 placeholder:text-gray-400 focus:border-gray-400 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:placeholder:text-gray-500"
+                />
+
+                <div className="mt-4 flex items-center justify-between gap-3">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    {reviewText.trim() ? "Your review is ready to share." : "Share your honest feedback for future travelers."}
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={handleSubmitReview}
+                    className="rounded-xl bg-gray-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200"
+                  >
+                    Submit review
+                  </button>
+                </div>
+              </div>
             </div>
 
           </div>

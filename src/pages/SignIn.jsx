@@ -28,7 +28,7 @@ function SignIn() {
 
   const from = location.state?.from || "/";
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
@@ -37,7 +37,7 @@ function SignIn() {
       return;
     }
 
-    const result = signin(email, password);
+    const result = await signin(email, password);
 
     if (!result.success) {
       setError(result.message);
@@ -255,9 +255,7 @@ function SignIn() {
                   Welcome back
                 </h1>
 
-                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                  Sign in to continue to StaySphere
-                </p>
+               
               </motion.div>
 
               {/* Protected route message */}

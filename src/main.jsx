@@ -6,6 +6,7 @@ import App from "./App.jsx";
 import ThemeProvider from "./context/ThemeContext";
 import AuthProvider from "./context/AuthContext";
 import WishlistProvider from "./context/WishlistContext";
+import BookingProvider from "./context/BookingContext";
 
 import "./styles/global.css";
 
@@ -15,7 +16,9 @@ createRoot(document.getElementById("root")).render(
       <ThemeProvider>
         <AuthProvider>
           <WishlistProvider>
-            <App />
+            <BookingProvider>
+              <App />
+            </BookingProvider>
           </WishlistProvider>
         </AuthProvider>
       </ThemeProvider>

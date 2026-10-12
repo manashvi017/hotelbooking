@@ -2,6 +2,15 @@ import { createContext, useEffect, useState } from "react";
 
 export const AuthContext = createContext();
 
+const getStoredUsers = () => {
+  try {
+    const savedUsers = localStorage.getItem("staySphereUsers");
+    return savedUsers ? JSON.parse(savedUsers) : [];
+  } catch (error) {
+    return [];
+  }
+};
+
 function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
@@ -13,21 +22,16 @@ function AuthProvider({ children }) {
     }
   }, []);
 
-  // =========================
-  // SIGN UP
-  // =========================
-  const signup = (userData) => {
-    const users = JSON.parse(
-      localStorage.getItem("staySphereUsers") || "[]"
-    );
+  const saveCurrentUser = (currentUser) => {
+    setUser(currentUser);
+    localStorage.setItem("staySphereUser", JSON.stringify(currentUser));
+  };
 
+  const signup = async (userData) => {
+    const users = getStoredUsers();
     const email = userData.email.trim().toLowerCase();
 
-    // Check if email already exists
-    const existingUser = users.find(
-      (item) =>
-        item.email.trim().toLowerCase() === email
-    );
+    const existingUser = users.find((item) => item.email.toLowerCase() === email);
 
     if (existingUser) {
       return {
@@ -36,36 +40,23 @@ function AuthProvider({ children }) {
       };
     }
 
-    // Create new user dynamically
     const newUser = {
-      id: Date.now(),
+      id: Date.now().toString(),
       name: userData.name.trim(),
-      email: email,
+      email,
       password: userData.password,
     };
 
-    // Add user to existing users
     users.push(newUser);
+    localStorage.setItem("staySphereUsers", JSON.stringify(users));
 
-    // Save all users
-    localStorage.setItem(
-      "staySphereUsers",
-      JSON.stringify(users)
-    );
-
-    // Set current logged-in user
     const currentUser = {
       id: newUser.id,
       name: newUser.name,
       email: newUser.email,
     };
 
-    setUser(currentUser);
-
-    localStorage.setItem(
-      "staySphereUser",
-      JSON.stringify(currentUser)
-    );
+    saveCurrentUser(currentUser);
 
     return {
       success: true,
@@ -73,43 +64,27 @@ function AuthProvider({ children }) {
     };
   };
 
-  // =========================
-  // SIGN IN
-  // =========================
-  const signin = (email, password) => {
-    const users = JSON.parse(
-      localStorage.getItem("staySphereUsers") || "[]"
+  const signin = async (email, password) => {
+    const users = getStoredUsers();
+    const normalizedEmail = email.trim().toLowerCase();
+    const userMatch = users.find(
+      (item) => item.email.toLowerCase() === normalizedEmail && item.password === password
     );
 
-    const enteredEmail = email.trim().toLowerCase();
-
-    // Find matching email + password
-    const foundUser = users.find(
-      (item) =>
-        item.email === enteredEmail &&
-        item.password === password
-    );
-
-    if (!foundUser) {
+    if (!userMatch) {
       return {
         success: false,
         message: "Invalid email or password.",
       };
     }
 
-    // Don't store password in logged-in user
     const currentUser = {
-      id: foundUser.id,
-      name: foundUser.name,
-      email: foundUser.email,
+      id: userMatch.id,
+      name: userMatch.name,
+      email: userMatch.email,
     };
 
-    setUser(currentUser);
-
-    localStorage.setItem(
-      "staySphereUser",
-      JSON.stringify(currentUser)
-    );
+    saveCurrentUser(currentUser);
 
     return {
       success: true,
@@ -117,9 +92,6 @@ function AuthProvider({ children }) {
     };
   };
 
-  // =========================
-  // LOGOUT
-  // =========================
   const logout = () => {
     setUser(null);
     localStorage.removeItem("staySphereUser");
